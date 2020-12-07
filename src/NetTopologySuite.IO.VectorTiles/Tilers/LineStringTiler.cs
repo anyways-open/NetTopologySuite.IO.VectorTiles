@@ -25,7 +25,7 @@ namespace NetTopologySuite.IO.VectorTiles.Tilers
             
             // return all the next tiles.
             HashSet<ulong> tiles = null;
-            for (var c = 1; c < lineString.Coordinates.Length; c++)
+            for (var c = 1; c < lineString.Coordinates.Length; ++c)
             {
                 var coordinate = lineString.Coordinates[c];
                 var tileId = Tile.CreateAroundLocationId(coordinate.Y, coordinate.X, zoom);
@@ -43,15 +43,14 @@ namespace NetTopologySuite.IO.VectorTiles.Tilers
                     // determine all tiles between the two.
                     var previousCoordinate = lineString.Coordinates[c - 1];
                     var previousTile = new Tile(previousTileId);
-                    var previousTileCoordinates =
-                        previousTile.SubCoordinates(previousCoordinate.Y, previousCoordinate.X);
+                    var previousTileCoordinates = previousTile.SubCoordinates(previousCoordinate.Y, previousCoordinate.X);
                     var nextTile = new Tile(tileId);
                     var nextTileCoordinates = nextTile.SubCoordinates(coordinate.Y, coordinate.X);
 
-                    foreach (var (x, y) in Shared.LineBetween(previousTileCoordinates.x, previousTileCoordinates.y,
-                        nextTileCoordinates.x, nextTileCoordinates.y))
+                    foreach (var position in Shared.LineBetween(previousTileCoordinates.X, previousTileCoordinates.Y,
+                        nextTileCoordinates.X, nextTileCoordinates.Y))
                     {
-                        var betweenTileId = Tile.CalculateTileId(zoom, x, y);
+                        var betweenTileId = Tile.CalculateTileId(zoom, position);
                         if (tiles.Contains(betweenTileId)) continue;
                         tiles.Add(betweenTileId);
                         yield return betweenTileId;
@@ -85,6 +84,8 @@ namespace NetTopologySuite.IO.VectorTiles.Tilers
 
             switch (intersection)
             {
+                case Point _:
+                    yield break;
                 case LineString ls:
                     // intersection is a linestring.
                     yield return ls;

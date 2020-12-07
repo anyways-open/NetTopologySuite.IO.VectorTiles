@@ -12,10 +12,10 @@ namespace NetTopologySuite.IO.VectorTiles.Tests.Tilers
             var tiles = Shared.LineBetween(0.1, 0.5, 1.5, 0.9).ToList();
             
             Assert.Equal(2, tiles.Count);
-            Assert.Equal(0, tiles[0].x);
-            Assert.Equal(0, tiles[0].y);
-            Assert.Equal(1, tiles[1].x);
-            Assert.Equal(0, tiles[1].y);
+            Assert.Equal(0, tiles[0].X);
+            Assert.Equal(0, tiles[0].Y);
+            Assert.Equal(1, tiles[1].X);
+            Assert.Equal(0, tiles[1].Y);
         }
         
         [Fact]
@@ -24,10 +24,10 @@ namespace NetTopologySuite.IO.VectorTiles.Tests.Tilers
             var tiles = Shared.LineBetween(1.5, 0.5, 0.1, 0.9).ToList();
             
             Assert.Equal(2, tiles.Count);
-            Assert.Equal(1, tiles[0].x);
-            Assert.Equal(0, tiles[0].y);
-            Assert.Equal(0, tiles[1].x);
-            Assert.Equal(0, tiles[1].y);
+            Assert.Equal(1, tiles[0].X);
+            Assert.Equal(0, tiles[0].Y);
+            Assert.Equal(0, tiles[1].X);
+            Assert.Equal(0, tiles[1].Y);
         }
         
         [Fact]
@@ -36,10 +36,10 @@ namespace NetTopologySuite.IO.VectorTiles.Tests.Tilers
             var tiles = Shared.LineBetween(0.5, 0.1, 0.9, 1.5).ToList();
             
             Assert.Equal(2, tiles.Count);
-            Assert.Equal(0, tiles[0].x);
-            Assert.Equal(0, tiles[0].y);
-            Assert.Equal(0, tiles[1].x);
-            Assert.Equal(1, tiles[1].y);
+            Assert.Equal(0, tiles[0].X);
+            Assert.Equal(0, tiles[0].Y);
+            Assert.Equal(0, tiles[1].X);
+            Assert.Equal(1, tiles[1].Y);
         }
         
         [Fact]
@@ -48,10 +48,10 @@ namespace NetTopologySuite.IO.VectorTiles.Tests.Tilers
             var tiles = Shared.LineBetween(0.5,1.5,0.9,0.1).ToList();
             
             Assert.Equal(2, tiles.Count);
-            Assert.Equal(0, tiles[0].x);
-            Assert.Equal(1, tiles[0].y);
-            Assert.Equal(0, tiles[1].x);
-            Assert.Equal(0, tiles[1].y);
+            Assert.Equal(0, tiles[0].X);
+            Assert.Equal(1, tiles[0].Y);
+            Assert.Equal(0, tiles[1].X);
+            Assert.Equal(0, tiles[1].Y);
         }
         
         [Fact]
@@ -60,12 +60,12 @@ namespace NetTopologySuite.IO.VectorTiles.Tests.Tilers
             var tiles = Shared.LineBetween(0.9, 0.5, 1.9, 1.1).ToList();
             
             Assert.Equal(3, tiles.Count);
-            Assert.Equal(0, tiles[0].x);
-            Assert.Equal(0, tiles[0].y);
-            Assert.Equal(1, tiles[1].x);
-            Assert.Equal(0, tiles[1].y);
-            Assert.Equal(1, tiles[2].x);
-            Assert.Equal(1, tiles[2].y);
+            Assert.Equal(0, tiles[0].X);
+            Assert.Equal(0, tiles[0].Y);
+            Assert.Equal(1, tiles[1].X);
+            Assert.Equal(0, tiles[1].Y);
+            Assert.Equal(1, tiles[2].X);
+            Assert.Equal(1, tiles[2].Y);
         }
         
         [Fact]
@@ -74,12 +74,12 @@ namespace NetTopologySuite.IO.VectorTiles.Tests.Tilers
             var tiles = Shared.LineBetween(0.5, 0.9,1.1, 1.9).ToList();
             
             Assert.Equal(3, tiles.Count);
-            Assert.Equal(0, tiles[0].x);
-            Assert.Equal(0, tiles[0].y);
-            Assert.Equal(0, tiles[1].x);
-            Assert.Equal(1, tiles[1].y);
-            Assert.Equal(1, tiles[2].x);
-            Assert.Equal(1, tiles[2].y);
+            Assert.Equal(0, tiles[0].X);
+            Assert.Equal(0, tiles[0].Y);
+            Assert.Equal(0, tiles[1].X);
+            Assert.Equal(1, tiles[1].Y);
+            Assert.Equal(1, tiles[2].X);
+            Assert.Equal(1, tiles[2].Y);
         }
         
         [Fact]
@@ -88,12 +88,12 @@ namespace NetTopologySuite.IO.VectorTiles.Tests.Tilers
             var tiles = Shared.LineBetween(1.9, 1.1, 0.9, 0.5).ToList();
             
             Assert.Equal(3, tiles.Count);
-            Assert.Equal(1, tiles[0].x);
-            Assert.Equal(1, tiles[0].y);
-            Assert.Equal(1, tiles[1].x);
-            Assert.Equal(0, tiles[1].y);
-            Assert.Equal(0, tiles[2].x);
-            Assert.Equal(0, tiles[2].y);
+            Assert.Equal(1, tiles[0].X);
+            Assert.Equal(1, tiles[0].Y);
+            Assert.Equal(1, tiles[1].X);
+            Assert.Equal(0, tiles[1].Y);
+            Assert.Equal(0, tiles[2].X);
+            Assert.Equal(0, tiles[2].Y);
         }
         
         [Fact]
@@ -102,12 +102,12 @@ namespace NetTopologySuite.IO.VectorTiles.Tests.Tilers
             var tiles = Shared.LineBetween(1.1, 1.9,0.5, 0.9).ToList();
             
             Assert.Equal(3, tiles.Count);
-            Assert.Equal(1, tiles[0].x);
-            Assert.Equal(1, tiles[0].y);
-            Assert.Equal(0, tiles[1].x);
-            Assert.Equal(1, tiles[1].y);
-            Assert.Equal(0, tiles[2].x);
-            Assert.Equal(0, tiles[2].y);
+            Assert.Equal(1, tiles[0].X);
+            Assert.Equal(1, tiles[0].Y);
+            Assert.Equal(0, tiles[1].X);
+            Assert.Equal(1, tiles[1].Y);
+            Assert.Equal(0, tiles[2].X);
+            Assert.Equal(0, tiles[2].Y);
         }
         
         [Fact]
@@ -116,14 +116,14 @@ namespace NetTopologySuite.IO.VectorTiles.Tests.Tilers
             var tiles = Shared.LineBetween(0.5, 0.5,2.5, 1.5).ToList();
             
             Assert.Equal(4, tiles.Count);
-            Assert.Equal(0, tiles[0].x);
-            Assert.Equal(0, tiles[0].y);
-            Assert.Equal(1, tiles[1].x);
-            Assert.Equal(0, tiles[1].y);
-            Assert.Equal(1, tiles[2].x);
-            Assert.Equal(1, tiles[2].y);
-            Assert.Equal(2, tiles[3].x);
-            Assert.Equal(1, tiles[3].y);
+            Assert.Equal(0, tiles[0].X);
+            Assert.Equal(0, tiles[0].Y);
+            Assert.Equal(1, tiles[1].X);
+            Assert.Equal(0, tiles[1].Y);
+            Assert.Equal(1, tiles[2].X);
+            Assert.Equal(1, tiles[2].Y);
+            Assert.Equal(2, tiles[3].X);
+            Assert.Equal(1, tiles[3].Y);
         }
         
         [Fact]
@@ -132,14 +132,14 @@ namespace NetTopologySuite.IO.VectorTiles.Tests.Tilers
             var tiles = Shared.LineBetween(0.5, 0.5,1.5, 2.5).ToList();
             
             Assert.Equal(4, tiles.Count);
-            Assert.Equal(0, tiles[0].x);
-            Assert.Equal(0, tiles[0].y);
-            Assert.Equal(0, tiles[1].x);
-            Assert.Equal(1, tiles[1].y);
-            Assert.Equal(1, tiles[2].x);
-            Assert.Equal(1, tiles[2].y);
-            Assert.Equal(1, tiles[3].x);
-            Assert.Equal(2, tiles[3].y);
+            Assert.Equal(0, tiles[0].X);
+            Assert.Equal(0, tiles[0].Y);
+            Assert.Equal(0, tiles[1].X);
+            Assert.Equal(1, tiles[1].Y);
+            Assert.Equal(1, tiles[2].X);
+            Assert.Equal(1, tiles[2].Y);
+            Assert.Equal(1, tiles[3].X);
+            Assert.Equal(2, tiles[3].Y);
         }
         
         [Fact]
@@ -148,14 +148,14 @@ namespace NetTopologySuite.IO.VectorTiles.Tests.Tilers
             var tiles = Shared.LineBetween(2.5, 1.5, 0.5, 0.5).ToList();
             
             Assert.Equal(4, tiles.Count);
-            Assert.Equal(2, tiles[0].x);
-            Assert.Equal(1, tiles[0].y);
-            Assert.Equal(1, tiles[1].x);
-            Assert.Equal(1, tiles[1].y);
-            Assert.Equal(1, tiles[2].x);
-            Assert.Equal(0, tiles[2].y);
-            Assert.Equal(0, tiles[3].x);
-            Assert.Equal(0, tiles[3].y);
+            Assert.Equal(2, tiles[0].X);
+            Assert.Equal(1, tiles[0].Y);
+            Assert.Equal(1, tiles[1].X);
+            Assert.Equal(1, tiles[1].Y);
+            Assert.Equal(1, tiles[2].X);
+            Assert.Equal(0, tiles[2].Y);
+            Assert.Equal(0, tiles[3].X);
+            Assert.Equal(0, tiles[3].Y);
         }
         
         [Fact]
@@ -164,14 +164,14 @@ namespace NetTopologySuite.IO.VectorTiles.Tests.Tilers
             var tiles = Shared.LineBetween(1.5, 2.5, 0.5, 0.5).ToList();
             
             Assert.Equal(4, tiles.Count);
-            Assert.Equal(1, tiles[0].x);
-            Assert.Equal(2, tiles[0].y);
-            Assert.Equal(1, tiles[1].x);
-            Assert.Equal(1, tiles[1].y);
-            Assert.Equal(0, tiles[2].x);
-            Assert.Equal(1, tiles[2].y);
-            Assert.Equal(0, tiles[3].x);
-            Assert.Equal(0, tiles[3].y);
+            Assert.Equal(1, tiles[0].X);
+            Assert.Equal(2, tiles[0].Y);
+            Assert.Equal(1, tiles[1].X);
+            Assert.Equal(1, tiles[1].Y);
+            Assert.Equal(0, tiles[2].X);
+            Assert.Equal(1, tiles[2].Y);
+            Assert.Equal(0, tiles[3].X);
+            Assert.Equal(0, tiles[3].Y);
         }
         
         [Fact]
@@ -180,18 +180,18 @@ namespace NetTopologySuite.IO.VectorTiles.Tests.Tilers
             var tiles = Shared.LineBetween(0.5, 0.5,4.5, 1.5).ToList();
             
             Assert.Equal(6, tiles.Count);
-            Assert.Equal(0, tiles[0].x);
-            Assert.Equal(0, tiles[0].y);
-            Assert.Equal(1, tiles[1].x);
-            Assert.Equal(0, tiles[1].y);
-            Assert.Equal(2, tiles[2].x);
-            Assert.Equal(0, tiles[2].y);
-            Assert.Equal(2, tiles[3].x);
-            Assert.Equal(1, tiles[3].y);
-            Assert.Equal(3, tiles[4].x);
-            Assert.Equal(1, tiles[4].y);
-            Assert.Equal(4, tiles[5].x);
-            Assert.Equal(1, tiles[5].y);
+            Assert.Equal(0, tiles[0].X);
+            Assert.Equal(0, tiles[0].Y);
+            Assert.Equal(1, tiles[1].X);
+            Assert.Equal(0, tiles[1].Y);
+            Assert.Equal(2, tiles[2].X);
+            Assert.Equal(0, tiles[2].Y);
+            Assert.Equal(2, tiles[3].X);
+            Assert.Equal(1, tiles[3].Y);
+            Assert.Equal(3, tiles[4].X);
+            Assert.Equal(1, tiles[4].Y);
+            Assert.Equal(4, tiles[5].X);
+            Assert.Equal(1, tiles[5].Y);
         }
         
         [Fact]
@@ -200,18 +200,18 @@ namespace NetTopologySuite.IO.VectorTiles.Tests.Tilers
             var tiles = Shared.LineBetween(0.5, 0.5,1.5, 4.5).ToList();
             
             Assert.Equal(6, tiles.Count);
-            Assert.Equal(0, tiles[0].x);
-            Assert.Equal(0, tiles[0].y);
-            Assert.Equal(0, tiles[1].x);
-            Assert.Equal(1, tiles[1].y);
-            Assert.Equal(0, tiles[2].x);
-            Assert.Equal(2, tiles[2].y);
-            Assert.Equal(1, tiles[3].x);
-            Assert.Equal(2, tiles[3].y);
-            Assert.Equal(1, tiles[4].x);
-            Assert.Equal(3, tiles[4].y);
-            Assert.Equal(1, tiles[5].x);
-            Assert.Equal(4, tiles[5].y);
+            Assert.Equal(0, tiles[0].X);
+            Assert.Equal(0, tiles[0].Y);
+            Assert.Equal(0, tiles[1].X);
+            Assert.Equal(1, tiles[1].Y);
+            Assert.Equal(0, tiles[2].X);
+            Assert.Equal(2, tiles[2].Y);
+            Assert.Equal(1, tiles[3].X);
+            Assert.Equal(2, tiles[3].Y);
+            Assert.Equal(1, tiles[4].X);
+            Assert.Equal(3, tiles[4].Y);
+            Assert.Equal(1, tiles[5].X);
+            Assert.Equal(4, tiles[5].Y);
         }
         
         [Fact]
@@ -220,18 +220,18 @@ namespace NetTopologySuite.IO.VectorTiles.Tests.Tilers
             var tiles = Shared.LineBetween(4.5, 1.5, 0.5, 0.5).ToList();
             
             Assert.Equal(6, tiles.Count);
-            Assert.Equal(4, tiles[0].x);
-            Assert.Equal(1, tiles[0].y);
-            Assert.Equal(3, tiles[1].x);
-            Assert.Equal(1, tiles[1].y);
-            Assert.Equal(2, tiles[2].x);
-            Assert.Equal(1, tiles[2].y);
-            Assert.Equal(2, tiles[3].x);
-            Assert.Equal(0, tiles[3].y);
-            Assert.Equal(1, tiles[4].x);
-            Assert.Equal(0, tiles[4].y);
-            Assert.Equal(0, tiles[5].x);
-            Assert.Equal(0, tiles[5].y);
+            Assert.Equal(4, tiles[0].X);
+            Assert.Equal(1, tiles[0].Y);
+            Assert.Equal(3, tiles[1].X);
+            Assert.Equal(1, tiles[1].Y);
+            Assert.Equal(2, tiles[2].X);
+            Assert.Equal(1, tiles[2].Y);
+            Assert.Equal(2, tiles[3].X);
+            Assert.Equal(0, tiles[3].Y);
+            Assert.Equal(1, tiles[4].X);
+            Assert.Equal(0, tiles[4].Y);
+            Assert.Equal(0, tiles[5].X);
+            Assert.Equal(0, tiles[5].Y);
         }
         
         [Fact]
@@ -240,18 +240,18 @@ namespace NetTopologySuite.IO.VectorTiles.Tests.Tilers
             var tiles = Shared.LineBetween(1.5, 4.5, 0.5, 0.5).ToList();
             
             Assert.Equal(6, tiles.Count);
-            Assert.Equal(1, tiles[0].x);
-            Assert.Equal(4, tiles[0].y);
-            Assert.Equal(1, tiles[1].x);
-            Assert.Equal(3, tiles[1].y);
-            Assert.Equal(1, tiles[2].x);
-            Assert.Equal(2, tiles[2].y);
-            Assert.Equal(0, tiles[3].x);
-            Assert.Equal(2, tiles[3].y);
-            Assert.Equal(0, tiles[4].x);
-            Assert.Equal(1, tiles[4].y);
-            Assert.Equal(0, tiles[5].x);
-            Assert.Equal(0, tiles[5].y);
+            Assert.Equal(1, tiles[0].X);
+            Assert.Equal(4, tiles[0].Y);
+            Assert.Equal(1, tiles[1].X);
+            Assert.Equal(3, tiles[1].Y);
+            Assert.Equal(1, tiles[2].X);
+            Assert.Equal(2, tiles[2].Y);
+            Assert.Equal(0, tiles[3].X);
+            Assert.Equal(2, tiles[3].Y);
+            Assert.Equal(0, tiles[4].X);
+            Assert.Equal(1, tiles[4].Y);
+            Assert.Equal(0, tiles[5].X);
+            Assert.Equal(0, tiles[5].Y);
         }
         
         [Fact]
@@ -260,16 +260,16 @@ namespace NetTopologySuite.IO.VectorTiles.Tests.Tilers
             var tiles = Shared.LineBetween(2.75, 0.125, 0.26, 2.29).ToList();
             
             Assert.Equal(5, tiles.Count);
-            Assert.Equal(2, tiles[0].x);
-            Assert.Equal(0, tiles[0].y);
-            Assert.Equal(1, tiles[1].x);
-            Assert.Equal(0, tiles[1].y);
-            Assert.Equal(1, tiles[2].x);
-            Assert.Equal(1, tiles[2].y);
-            Assert.Equal(0, tiles[3].x);
-            Assert.Equal(1, tiles[3].y);
-            Assert.Equal(0, tiles[4].x);
-            Assert.Equal(2, tiles[4].y);
+            Assert.Equal(2, tiles[0].X);
+            Assert.Equal(0, tiles[0].Y);
+            Assert.Equal(1, tiles[1].X);
+            Assert.Equal(0, tiles[1].Y);
+            Assert.Equal(1, tiles[2].X);
+            Assert.Equal(1, tiles[2].Y);
+            Assert.Equal(0, tiles[3].X);
+            Assert.Equal(1, tiles[3].Y);
+            Assert.Equal(0, tiles[4].X);
+            Assert.Equal(2, tiles[4].Y);
         }
         
         [Fact]
@@ -278,16 +278,16 @@ namespace NetTopologySuite.IO.VectorTiles.Tests.Tilers
             var tiles = Shared.LineBetween(0.26, 0.125, 2.75, 2.29).ToList();
             
             Assert.Equal(5, tiles.Count);
-            Assert.Equal(0, tiles[0].x);
-            Assert.Equal(0, tiles[0].y);
-            Assert.Equal(1, tiles[1].x);
-            Assert.Equal(0, tiles[1].y);
-            Assert.Equal(1, tiles[2].x);
-            Assert.Equal(1, tiles[2].y);
-            Assert.Equal(2, tiles[3].x);
-            Assert.Equal(1, tiles[3].y);
-            Assert.Equal(2, tiles[4].x);
-            Assert.Equal(2, tiles[4].y);
+            Assert.Equal(0, tiles[0].X);
+            Assert.Equal(0, tiles[0].Y);
+            Assert.Equal(1, tiles[1].X);
+            Assert.Equal(0, tiles[1].Y);
+            Assert.Equal(1, tiles[2].X);
+            Assert.Equal(1, tiles[2].Y);
+            Assert.Equal(2, tiles[3].X);
+            Assert.Equal(1, tiles[3].Y);
+            Assert.Equal(2, tiles[4].X);
+            Assert.Equal(2, tiles[4].Y);
         }
     }
 }

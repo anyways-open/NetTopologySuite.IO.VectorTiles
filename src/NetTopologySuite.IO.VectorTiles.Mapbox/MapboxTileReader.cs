@@ -9,8 +9,6 @@ namespace NetTopologySuite.IO.VectorTiles.Mapbox
 {
     public class MapboxTileReader
     {
-
-
         private readonly GeometryFactory _factory;
 
         public MapboxTileReader() : this(new GeometryFactory(new PrecisionModel(), 4326))
@@ -73,22 +71,25 @@ namespace NetTopologySuite.IO.VectorTiles.Mapbox
         
         private Geometry ReadPoint(TileGeometryTransform tgs, IList<uint> geometry)
         {
-            int currentIndex = 0; int currentX = 0; int currentY = 0;
-            var sequences = ReadCoordinateSequences(tgs, geometry, ref currentIndex, ref currentX, ref currentY, forPoint:true);
+            int currentIndex = 0;
+            var currentPosition = new System.Numerics.Vector2();
+            var sequences = ReadCoordinateSequences(tgs, geometry, ref currentIndex, ref currentPosition, forPoint:true);
             return CreatePuntal(sequences);
         }
 
         private Geometry ReadLineString(TileGeometryTransform tgs, IList<uint> geometry)
         {
-            int currentIndex = 0; int currentX = 0; int currentY = 0;
-            var sequences = ReadCoordinateSequences(tgs, geometry, ref currentIndex, ref currentX, ref currentY);
+            int currentIndex = 0;
+            var currentPosition = new System.Numerics.Vector2();
+            var sequences = ReadCoordinateSequences(tgs, geometry, ref currentIndex, ref currentPosition);
             return CreateLineal(sequences);
         }
 
         private Geometry ReadPolygon(TileGeometryTransform tgs, IList<uint> geometry)
         {
-            int currentIndex = 0; int currentX = 0; int currentY = 0;
-            var sequences = ReadCoordinateSequences(tgs, geometry, ref currentIndex, ref currentX, ref currentY, 1);
+            int currentIndex = 0;
+            var currentPosition = new System.Numerics.Vector2();
+            var sequences = ReadCoordinateSequences(tgs, geometry, ref currentIndex, ref currentPosition, 1);
             return CreatePolygonal(sequences);
         }
 
@@ -98,7 +99,8 @@ namespace NetTopologySuite.IO.VectorTiles.Mapbox
                 return null;
 
             var points = new Point[sequences.Length];
-            for (int i = 0; i < sequences.Length; i++)
+
+            for (int i = 0; i < sequences.Length; ++i)
                 points[i] = _factory.CreatePoint(sequences[i]);
 
             if (points.Length == 1)
@@ -159,18 +161,18 @@ namespace NetTopologySuite.IO.VectorTiles.Mapbox
 
         private CoordinateSequence[] ReadCoordinateSequences(
             TileGeometryTransform tgs, IList<uint> geometry,
-            ref int currentIndex, ref int currentX, ref int currentY, int buffer = 0, bool forPoint = false)
+            ref int currentIndex, ref System.Numerics.Vector2 currentPosition, int buffer = 0, bool forPoint = false)
         {
             (var command, int count) = ParseCommandInteger(geometry[currentIndex]);
             Debug.Assert(command == MapboxCommandType.MoveTo);
             if (count > 1)
             {
                 currentIndex++;
-                return ReadSinglePointSequences(tgs, geometry, count, ref currentIndex, ref currentX, ref currentY);
+                return ReadSinglePointSequences(tgs, geometry, count, ref currentIndex, ref currentPosition);
             }
 
             var sequences = new List<CoordinateSequence>();
-            var currentPosition = (currentX, currentY);
+
             while (currentIndex < geometry.Count)
             {
                 (command, count) = ParseCommandInteger(geometry[currentIndex++]);
@@ -223,18 +225,14 @@ namespace NetTopologySuite.IO.VectorTiles.Mapbox
                 sequences.Add(sequence);
             }
 
-            // update current position values
-            currentX = currentPosition.currentX;
-            currentY = currentPosition.currentY;
-
             return sequences.ToArray();
         }
 
         private CoordinateSequence[] ReadSinglePointSequences(TileGeometryTransform tgs, IList<uint> geometry,
-            int numSequences, ref int currentIndex, ref int currentX, ref int currentY)
+            int numSequences, ref int currentIndex, ref System.Numerics.Vector2 currentPosition)
         {
             var res = new CoordinateSequence[numSequences];
-            var currentPosition = (currentX, currentY);
+
             for (int i = 0; i < numSequences; i++)
             {
                 res[i] = _factory.CoordinateSequenceFactory.Create(1, 2);
@@ -243,34 +241,22 @@ namespace NetTopologySuite.IO.VectorTiles.Mapbox
                 TransformOffsetAndAddToSequence(tgs, currentPosition, res[i], 0);
             }
 
-            currentX = currentPosition.currentX;
-            currentY = currentPosition.currentY;
             return res;
         }
 
-        private void TransformOffsetAndAddToSequence(TileGeometryTransform tgs, (int x, int y) localPosition, CoordinateSequence sequence, int index)
+        private void TransformOffsetAndAddToSequence(TileGeometryTransform tgs, System.Numerics.Vector2 localPosition, CoordinateSequence sequence, int index)
         {
-            var (longitude, latitude) = tgs.TransformInverse(localPosition.x, localPosition.y);
-            sequence.SetOrdinate(index, Ordinate.X, longitude);
-            sequence.SetOrdinate(index, Ordinate.Y, latitude);
+            var vector = tgs.TransformInverse(localPosition);
+            sequence.SetOrdinate(index, Ordinate.X, vector.X);
+            sequence.SetOrdinate(index, Ordinate.Y, vector.Y);
         }
 
-        private (int, int) ParseOffset((int x, int y) currentPosition, IList<uint> parameterIntegers, ref int offset)
-        {
-            return (currentPosition.x + Decode(parameterIntegers[offset++]),
-                    currentPosition.y + Decode(parameterIntegers[offset++]));
-        }
+        private System.Numerics.Vector2 ParseOffset(System.Numerics.Vector2 currentPosition, IList<uint> parameterIntegers, ref int offset)=> new(currentPosition.X + Decode(parameterIntegers[offset++]),
+                    currentPosition.Y + Decode(parameterIntegers[offset++]));
 
-        private static int Decode(uint parameterInteger)
-        {
-            return ((int) (parameterInteger >> 1) ^ ((int)-(parameterInteger & 1)));
-        }
+        private static int Decode(uint parameterInteger) => (int)(parameterInteger >> 1) ^ ((int)-(parameterInteger & 1));
 
-        private static (MapboxCommandType, int) ParseCommandInteger(uint commandInteger)
-        {
-            return unchecked(((MapboxCommandType) (commandInteger & 0x07U), (int)(commandInteger >> 3)));
-           
-        }
+        private static (MapboxCommandType, int) ParseCommandInteger(uint commandInteger)=> unchecked(((MapboxCommandType)(commandInteger & 0x07U), (int)(commandInteger >> 3)));
 
         private static IAttributesTable ReadAttributeTable(Tile.Feature mbTileFeature, List<string> keys, List<Tile.Value> values)
         {

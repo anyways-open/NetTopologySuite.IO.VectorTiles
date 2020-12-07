@@ -15,7 +15,7 @@ namespace NetTopologySuite.IO.VectorTiles.Tilers
         /// <param name="x2">The x coordinate of the end of the line.</param>
         /// <param name="y2">The y coordinate of the end of the line.</param>
         /// <returns>The tiles that form the line between the two given coordinate pairs.</returns>
-        internal static IEnumerable<(int x, int y)> LineBetween(double x1, double y1, double x2, double y2)
+        internal static IEnumerable<System.Numerics.Vector2> LineBetween(double x1, double y1, double x2, double y2)
         {
             var xDiff = x2 - x1;
             var yDiff = y2 - y1;
@@ -30,16 +30,16 @@ namespace NetTopologySuite.IO.VectorTiles.Tilers
                 var xLast = (int) Math.Floor(x2);
                 var yLast = (int) Math.Floor(y2);
                 
-                var slope = (yDiff / xDiff);
+                var slope = yDiff / xDiff;
                 var y0 = y1 - (slope * x1);
                 
                 // with an increment of 1 we calculate y.
-                var right = (xDiff > 0);
-                // var up = (yDiff > 0);
+                var right = xDiff > 0;
+                // var up = yDiff > 0;
                 var xStep = right ? 1 : -1;
                 var start = right ? (int)Math.Ceiling(x1) : (int)Math.Floor(x1);
                 var end = right ? (int)Math.Floor(x2) : (int)Math.Ceiling(x2);
-                yield return (xPrevious, yPrevious);
+                yield return new(xPrevious, yPrevious);
                 for (var x = start; x != end + xStep; x += xStep)
                 {
                     // REMARK: this can be more efficient but this way numerically more stable. 
@@ -55,20 +55,20 @@ namespace NetTopologySuite.IO.VectorTiles.Tilers
                         // if we go left, we return the previous y at the same x.
                         if (right)
                         {
-                            yield return (xPrevious, yRounded);
+                            yield return new(xPrevious, yRounded);
                         }
                         else if(xPrevious != x)
                         {
-                            yield return (x, yPrevious);
+                            yield return new(x, yPrevious);
                         }
 
-                        yield return (x, yRounded);
+                        yield return new(x, yRounded);
                         xPrevious = x;
                         yPrevious = yRounded;
                     }
                     else if (xPrevious != x)
                     {
-                        yield return (x, yRounded);
+                        yield return new(x, yRounded);
                         xPrevious = x;
                         yPrevious = yRounded;
                     }
@@ -83,18 +83,18 @@ namespace NetTopologySuite.IO.VectorTiles.Tilers
                         // if we go left, we return the previous y at the same x.
                         if (xPrevious != xLast)
                         {
-                            yield return (xLast, yPrevious);
+                            yield return new (xLast, yPrevious);
                         }
                     }
 
-                    yield return (xLast, yLast);
+                    yield return new (xLast, yLast);
                 }
             }
             else
             { // we take y.
                 foreach (var reversed in LineBetween(y1, x1, y2, x2))
                 {
-                    yield return (reversed.y, reversed.x);
+                    yield return new (reversed.Y, reversed.X);
                 }
             }
         }

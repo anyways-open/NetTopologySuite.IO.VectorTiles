@@ -15,19 +15,8 @@ namespace NetTopologySuite.IO.VectorTiles.Mapbox
         /// <param name="path">The path.</param>
         /// <param name="extent">The extent.</param>
         /// <remarks>Replaces the files if they are already present.</remarks>
-        public static void Write(this VectorTileTree tree, string path, uint extent = 4096)
-        {
-            IEnumerable<VectorTile> GetTiles()
-            {
-                foreach (var tile in tree)
-                {
-                    yield return tree[tile];
-                }
-            }
-            
-            GetTiles().Write(path, extent);
-        }
-        
+        public static void Write(this VectorTileTree tree, string path, uint extent = 4096) => tree.Tiles.Write(path, extent);
+
         /// <summary>
         /// Writes the tiles in a /z/x/y.mvt folder structure.
         /// </summary>
@@ -123,7 +112,7 @@ namespace NetTopologySuite.IO.VectorTiles.Mapbox
             var aKeys = attributes.GetNames();
             var aValues = attributes.GetValues();
 
-            for (var a = 0; a < aKeys.Length; a++)
+            for (var a = 0; a < aKeys.Length; ++a)
             {
                 var key = aKeys[a];
                 if (string.IsNullOrEmpty(key)) continue;
@@ -185,10 +174,11 @@ namespace NetTopologySuite.IO.VectorTiles.Mapbox
             {
                 var point = (Point) geometry.GetGeometryN(i);
                 var position = tgt.Transform(point.CoordinateSequence, CoordinateIndex, ref currentX, ref currentY);
-                if (i == 0 || position.x > 0 || position.y > 0)
+                if (i == 0 || position.X > 0 || position.Y > 0)
                 {
-                    parameters.Add(GenerateParameterInteger(position.x));
-                    parameters.Add(GenerateParameterInteger(position.y));
+                    //TODO GenerateParameterInteger taking position
+                    parameters.Add(GenerateParameterInteger((int)position.X));
+                    parameters.Add(GenerateParameterInteger((int)position.Y));
                 }
             }
 
@@ -254,19 +244,19 @@ namespace NetTopologySuite.IO.VectorTiles.Mapbox
             // Start point
             encoded.Add(GenerateCommandInteger(MapboxCommandType.MoveTo, 1));
             var position = tgt.Transform(sequence, 0, ref currentX, ref currentY);
-            encoded.Add(GenerateParameterInteger(position.x));
-            encoded.Add(GenerateParameterInteger(position.y));
+            encoded.Add(GenerateParameterInteger((int)position.X));
+            encoded.Add(GenerateParameterInteger((int)position.Y));
 
             // Add LineTo command (stub)
             int lineToCount = 0;
             encoded.Add(GenerateCommandInteger(MapboxCommandType.LineTo, lineToCount));
-            for (int i = 1; i < count; i++)
+            for (int i = 1; i < count; ++i)
             {
                 position = tgt.Transform(sequence, i, ref currentX, ref currentY);
-                if (position.x != 0 || position.y != 0)
+                if (position.X != 0 || position.Y != 0)
                 {
-                    encoded.Add(GenerateParameterInteger(position.x));
-                    encoded.Add(GenerateParameterInteger(position.y));
+                    encoded.Add(GenerateParameterInteger((int)position.X));
+                    encoded.Add(GenerateParameterInteger((int)position.Y));
                     lineToCount++;
                 }
             }
@@ -317,19 +307,13 @@ namespace NetTopologySuite.IO.VectorTiles.Mapbox
         /// <summary>
         /// Generates a command integer.
         /// </summary>
-        private static uint GenerateCommandInteger(MapboxCommandType command, int count)
-        { // CommandInteger = (id & 0x7) | (count << 3)
-            return (uint) (((int)command & 0x7) | (count << 3));
-        }
+        private static uint GenerateCommandInteger(MapboxCommandType command, int count)=> (uint)(((int)command & 0x7) | (count << 3));
 
         /// <summary>
         /// Generates a parameter integer.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        private static uint GenerateParameterInteger(int value)
-        { // ParameterInteger = (value << 1) ^ (value >> 31)
-            return (uint) ((value<<1) ^ (value>> 31));
-        }
+        private static uint GenerateParameterInteger(int value) => (uint)((value << 1) ^ (value >> 31));
     }
 }
