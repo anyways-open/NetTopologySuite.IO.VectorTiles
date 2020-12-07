@@ -17,12 +17,9 @@ namespace NetTopologySuite.IO.VectorTiles.Tiles
         /// <param name="id"></param>
         public Tile(ulong id)
         {
-            _id = id;
+            var vec = Tile.CalculateTile(_id = id);
+            (this.X, this.Y, this.Zoom) = ((int)vec.X, (int)vec.Y, (int)vec.Z);
 
-            var (x, y, zoom) = Tile.CalculateTile(id);
-            this.X = x;
-            this.Y = y;
-            this.Zoom = zoom;
             this.CalculateBounds();
         }
 
@@ -31,26 +28,24 @@ namespace NetTopologySuite.IO.VectorTiles.Tiles
         /// </summary>
         public Tile(int x, int y, int zoom)
         {
-            this.X = x;
-            this.Y = y;
-            this.Zoom = zoom;
+            _id = Tile.CalculateTileId(this.Zoom = zoom, this.X = x, this.Y = y);
 
-            _id = Tile.CalculateTileId(zoom, x, y);
             this.CalculateBounds();
         }
 
         private void CalculateBounds()
         {
-            var n = Math.PI - ((2.0 * Math.PI * this.Y) / Math.Pow(2.0, this.Zoom));
-            this.Left = (double) ((this.X / Math.Pow(2.0, this.Zoom) * 360.0) - 180.0);
-            this.Top = (double) (180.0 / Math.PI * Math.Atan(Math.Sinh(n)));
+            var zoomSquare = Math.Pow(2.0, this.Zoom);
+            var n = Math.PI - (TileMath.PI2 * this.Y / zoomSquare);
+            this.Left = (double)((this.X / zoomSquare * 360.0) - 180.0);
+            this.Top = (double)(TileMath.OneRadian * Math.Atan(Math.Sinh(n)));
 
-            n = Math.PI - ((2.0 * Math.PI * (this.Y + 1)) / Math.Pow(2.0, this.Zoom));
-            this.Right = (double) (((this.X + 1) / Math.Pow(2.0, this.Zoom) * 360.0) - 180.0);
-            this.Bottom = (double) (180.0 / Math.PI * Math.Atan(Math.Sinh(n)));
+            n = Math.PI - (TileMath.PI2 * (this.Y + 1) / zoomSquare);
+            this.Right = (double)(((this.X + 1) / zoomSquare * 360.0) - 180.0);
+            this.Bottom = (double)(TileMath.OneRadian * Math.Atan(Math.Sinh(n)));
 
-            this.CenterLat = (double) ((this.Top + this.Bottom) / 2.0);
-            this.CenterLon = (double) ((this.Left + this.Right) / 2.0);
+            this.CenterLat = (double)((this.Top + this.Bottom) / 2.0);
+            this.CenterLon = (double)((this.Left + this.Right) / 2.0);
         }
 
         /// <summary>
@@ -107,38 +102,40 @@ namespace NetTopologySuite.IO.VectorTiles.Tiles
         /// Returns a hashcode for this tile position.
         /// </summary>
         /// <returns></returns>
-        public override int GetHashCode()
-        {
-            return this.X.GetHashCode() ^
-                   this.Y.GetHashCode() ^
-                   this.Zoom.GetHashCode();
-        }
+        public override int GetHashCode() => HashCode.Combine(X.GetHashCode(), Y.GetHashCode(), Zoom.GetHashCode());
 
         /// <summary>
         /// Returns true if the given object represents the same tile.
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is Tile other)
             {
-                return other.X == this.X &&
-                       other.Y == this.Y &&
-                       other.Zoom == this.Zoom;
+                return Equals(other);
             }
 
             return false;
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public bool Equals(Tile other)
+        {
+            return other.X == this.X &&
+                       other.Y == this.Y &&
+                       other.Zoom == this.Zoom;
+        }
+
+        /// <summary>
         /// Returns a description for this tile.
         /// </summary>
         /// <returns></returns>
-        public override string ToString()
-        {
-            return $"{this.X}x-{this.Y}y@{this.Zoom}z";
-        }
+        public override string ToString() => $"{this.X}x-{this.Y}y@{this.Zoom}z";
 
         /// <summary>
         /// Returns true if the given tiles are direct neighbours.
@@ -153,20 +150,20 @@ namespace NetTopologySuite.IO.VectorTiles.Tiles
             var tile1 = Tile.CalculateTile(tileId1);
             var tile2 = Tile.CalculateTile(tileId2);
 
-            if (tile1.zoom != tile2.zoom)
+            if (tile1.Z != tile2.Z)
             {
                 return false;
             }
 
-            if (tile1.x == tile2.x)
+            if (tile1.X == tile2.X)
             {
-                return (tile1.y == tile2.y + 1) ||
-                       (tile1.y == tile2.y - 1);
+                return (tile1.Y == tile2.Y + 1) ||
+                       (tile1.Y == tile2.Y - 1);
             }
-            else if (tile1.y == tile2.y)
+            else if (tile1.Y == tile2.Y)
             {
-                return (tile1.x == tile2.x + 1) ||
-                       (tile1.x == tile2.x - 1);
+                return (tile1.X == tile2.X + 1) ||
+                       (tile1.X == tile2.X - 1);
             }
 
             return false;
@@ -179,88 +176,36 @@ namespace NetTopologySuite.IO.VectorTiles.Tiles
         /// <returns></returns>
         private static ulong CalculateTileId(int zoom)
         {
-            if (zoom == 0)
+            switch (zoom)
             {
-                // zoom level 0: {0}.
-                return 0;
+                case 0: return 0;
+                case 1: return 1;
+                case 2: return 5;
+                case 3: return 21;
+                case 4: return 85;
+                case 5: return 341;
+                case 6: return 1365;
+                case 7: return 5461;
+                case 8: return 21845;
+                case 9: return 87381;
+                case 10: return 349525;
+                case 11: return 1398101;
+                case 12: return 5592405;
+                case 13: return 22369621;
+                case 14: return 89478485;
+                case 15: return 357913941;
+                case 16: return 1431655765;
+                case 17: return 5726623061;
+                case 18: return 22906492245;
+                default:
+                    {
+                        var size = (ulong)System.Math.Pow(2, 2 * (zoom - 1));
+                        var tileId = Tile.CalculateTileId(zoom - 1) + size;
+                        return tileId;
+                    }
             }
-            else if (zoom == 1)
-            {
-                return 1;
-            }
-            else if (zoom == 2)
-            {
-                return 5;
-            }
-            else if (zoom == 3)
-            {
-                return 21;
-            }
-            else if (zoom == 4)
-            {
-                return 85;
-            }
-            else if (zoom == 5)
-            {
-                return 341;
-            }
-            else if (zoom == 6)
-            {
-                return 1365;
-            }
-            else if (zoom == 7)
-            {
-                return 5461;
-            }
-            else if (zoom == 8)
-            {
-                return 21845;
-            }
-            else if (zoom == 9)
-            {
-                return 87381;
-            }
-            else if (zoom == 10)
-            {
-                return 349525;
-            }
-            else if (zoom == 11)
-            {
-                return 1398101;
-            }
-            else if (zoom == 12)
-            {
-                return 5592405;
-            }
-            else if (zoom == 13)
-            {
-                return 22369621;
-            }
-            else if (zoom == 14)
-            {
-                return 89478485;
-            }
-            else if (zoom == 15)
-            {
-                return 357913941;
-            }
-            else if (zoom == 16)
-            {
-                return 1431655765;
-            }
-            else if (zoom == 17)
-            {
-                return 5726623061;
-            }
-            else if (zoom == 18)
-            {
-                return 22906492245;
-            }
-
-            var size = (ulong) System.Math.Pow(2, 2 * (zoom - 1));
-            var tileId = Tile.CalculateTileId(zoom - 1) + size;
-            return tileId;
         }
+        internal static ulong CalculateTileId(int zoom, System.Numerics.Vector2 v) => CalculateTileId(zoom, (int)v.X, (int)v.Y);
 
         /// <summary>
         /// Calculates the tile id of the tile at position (x, y) for the given zoom.
@@ -272,7 +217,7 @@ namespace NetTopologySuite.IO.VectorTiles.Tiles
         internal static ulong CalculateTileId(int zoom, int x, int y)
         {
             var id = Tile.CalculateTileId(zoom);
-            var width = (long) System.Math.Pow(2, zoom);
+            var width = (long)System.Math.Pow(2, zoom);
             return id + (ulong) x + (ulong) (y * width);
         }
 
@@ -281,7 +226,7 @@ namespace NetTopologySuite.IO.VectorTiles.Tiles
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        private static (int x, int y, int zoom) CalculateTile(ulong id)
+        private static System.Numerics.Vector3 CalculateTile(ulong id)
         {
             // find out the zoom level first.
             var zoom = 0;
@@ -291,19 +236,19 @@ namespace NetTopologySuite.IO.VectorTiles.Tiles
                 while (id >= Tile.CalculateTileId(zoom))
                 {
                     // move to the next zoom level and keep searching.
-                    zoom++;
+                    ++zoom;
                 }
 
-                zoom--;
+                --zoom;
             }
 
             // calculate the x-y.
             var local = id - Tile.CalculateTileId(zoom);
-            var width = (ulong) System.Math.Pow(2, zoom);
+            var width = (ulong)System.Math.Pow(2, zoom);
             var x = (int) (local % width);
             var y = (int) (local / width);
 
-            return (x, y, zoom);
+            return new(x, y, zoom);
         }
 
         /// <summary>
@@ -367,10 +312,10 @@ namespace NetTopologySuite.IO.VectorTiles.Tiles
                 return false;
             }
 
-            var n = (int) System.Math.Floor(System.Math.Pow(2, zoom));
-
             x = (int) ((lon + 180.0) / 360.0 * (1 << zoom));
-            var latRad = lat * Math.PI / 180.0;
+
+            var latRad = lat * TileMath.OneDegree;
+
             y = (int) ((1.0 - Math.Log(Math.Tan(latRad) +
                                        1.0 / Math.Cos(latRad)) / Math.PI) / 2.0 * (1 << zoom));
             return true;
@@ -441,7 +386,7 @@ namespace NetTopologySuite.IO.VectorTiles.Tiles
         /// <returns></returns>
         public Tile InvertX()
         {
-            var n = (int) System.Math.Floor(System.Math.Pow(2, this.Zoom));
+            var n = (int)System.Math.Floor(System.Math.Pow(2, this.Zoom));
 
             return new Tile(n - this.X - 1, this.Y, this.Zoom);
         }
@@ -452,18 +397,18 @@ namespace NetTopologySuite.IO.VectorTiles.Tiles
         /// <returns></returns>
         public Tile InvertY()
         {
-            var n = (int) System.Math.Floor(System.Math.Pow(2, this.Zoom));
+            var n = (int)System.Math.Floor(System.Math.Pow(2, this.Zoom));
 
             return new Tile(this.X, n - this.Y - 1, this.Zoom);
         }
 
-        internal (double x, double y) SubCoordinates(double lat, double lon)
+        internal System.Numerics.Vector2 SubCoordinates(double lat, double lon)
         {
             var leftOffset = lon - this.Left;
             var bottomOffset = lat - this.Bottom;
 
-            return (this.X + (leftOffset / (this.Right - this.Left)),
-                this.Y + (bottomOffset / (this.Top - this.Bottom)));
+            return new (this.X + (float)(leftOffset / (this.Right - this.Left)),
+                this.Y + (float)(bottomOffset / (this.Top - this.Bottom)));
         }
 
         public string ToGeoJson()

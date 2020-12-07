@@ -1,15 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using NetTopologySuite.Features;
-using Newtonsoft.Json;
 
 namespace NetTopologySuite.IO.VectorTiles.GeoJson
 {
     public static class GeoJsonTileWriter
     {
-        private static readonly JsonSerializer Serializer = GeoJsonSerializer.Create();
-        
         /// <summary>
         /// Writes the tiles in a /z/x/y-{layer}.geojson folder structure.
         /// </summary>
@@ -81,9 +77,7 @@ namespace NetTopologySuite.IO.VectorTiles.GeoJson
 
             if (featureCollection.Count == 0) return;
 
-            var streamWriter = new StreamWriter(stream, Encoding.Default, 1024, true);
-            Serializer.Serialize(streamWriter, featureCollection);
-            streamWriter.Flush();
+            System.Text.Json.JsonSerializer.Serialize(new System.Text.Json.Utf8JsonWriter(stream), featureCollection);
         }
         
         /// <summary>
@@ -101,9 +95,7 @@ namespace NetTopologySuite.IO.VectorTiles.GeoJson
 
             if (featureCollection.Count == 0) return;
 
-            var streamWriter = new StreamWriter(stream, Encoding.Default, 1024, true);
-            Serializer.Serialize(streamWriter, featureCollection);
-            streamWriter.Flush();
+            System.Text.Json.JsonSerializer.Serialize(new System.Text.Json.Utf8JsonWriter(stream), featureCollection);
         }
     }
 }
